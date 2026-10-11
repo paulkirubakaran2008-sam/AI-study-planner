@@ -1,0 +1,49 @@
+@import "@fontsource-variable/bricolage-grotesque";
+@import "@fontsource-variable/figtree";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --paper: 244 246 250; --surface: 255 255 255; --sunken: 237 240 246; --ink: 16 22 38; --muted: 91 100 120; --line: 224 229 238;
+  --primary: 47 68 232; --primary-ink: 255 255 255; --soft: 232 235 253; --amber: 245 158 11;
+  --crit: 217 45 67; --high: 234 122 18; --med: 196 148 8; --low: 46 158 107; --shadow: 16 22 38;
+  color-scheme: light;
+}
+.dark {
+  --paper: 11 16 28; --surface: 19 26 41; --sunken: 14 20 33; --ink: 232 236 245; --muted: 149 160 183; --line: 38 48 70;
+  --primary: 124 140 255; --primary-ink: 11 16 28; --soft: 31 40 78; --amber: 251 191 36;
+  --crit: 255 107 125; --high: 255 160 80; --med: 240 190 60; --low: 80 205 150; --shadow: 0 0 0;
+  color-scheme: dark;
+}
+html, body, #root { height: 100%; }
+body { @apply bg-paper font-sans text-ink antialiased; font-feature-settings: "ss01", "cv11"; -webkit-tap-highlight-color: transparent; }
+h1, h2, h3, .font-display { font-family: "Bricolage Grotesque Variable", ui-sans-serif, system-ui, sans-serif; letter-spacing: -0.015em; }
+.tnum { font-variant-numeric: tabular-nums; }
+:focus-visible { outline: 2px solid rgb(var(--primary)); outline-offset: 2px; border-radius: 6px; }
+::selection { background: rgb(var(--primary) / 0.25); }
+.safe-bottom { padding-bottom: max(env(safe-area-inset-bottom), 0.25rem); }
+.safe-top { padding-top: env(safe-area-inset-top); }
+.scroll-thin::-webkit-scrollbar { height: 8px; width: 8px; }
+.scroll-thin::-webkit-scrollbar-thumb { background: rgb(var(--line)); border-radius: 8px; }
+
+@keyframes pop { from { opacity: 0; transform: translateY(6px) scale(.98); } to { opacity: 1; transform: none; } }
+.pop { animation: pop .18s ease-out; }
+@keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+.skeleton { background: linear-gradient(90deg, rgb(var(--sunken)) 25%, rgb(var(--line) / .6) 50%, rgb(var(--sunken)) 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; border-radius: 10px; }
+@media (prefers-reduced-motion: reduce) { *, ::before, ::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; } }
+
+@layer components {
+  .card { @apply rounded-xl border border-line bg-surface shadow-card; }
+  .input { @apply w-full rounded-lg border border-line bg-surface px-3 py-2 text-sm text-ink placeholder:text-muted/70 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/25; }
+  .label { @apply mb-1 block text-xs font-semibold text-muted; }
+  .btn { @apply inline-flex items-center justify-center gap-2 rounded-lg px-3.5 py-2 text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50; }
+  .btn-primary { @apply btn bg-primary text-primary-ink hover:bg-primary/90; }
+  .btn-ghost { @apply btn border border-line bg-surface text-ink hover:bg-sunken; }
+  .btn-quiet { @apply btn text-muted hover:bg-sunken hover:text-ink; }
+  .btn-danger { @apply btn border border-crit/40 text-crit hover:bg-crit/10; }
+  .chip { @apply inline-flex items-center gap-1 rounded-full border border-line px-2.5 py-0.5 text-xs font-medium text-muted; }
+}
+
+/* grid items may shrink below their content width, so wide children never push the page sideways on phones */
+main .grid > * { min-width: 0; }

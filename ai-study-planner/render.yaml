@@ -1,0 +1,33 @@
+# Render Blueprint: creates the API web service and a PostgreSQL database in one step.
+# Frontend is deployed separately on Vercel (see README).
+databases:
+  - name: study-planner-db
+    plan: free
+    databaseName: study_planner
+
+services:
+  - type: web
+    name: ai-study-planner-api
+    runtime: python
+    rootDir: backend
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app.main:app -k uvicorn.workers.UvicornWorker -w 2 -b 0.0.0.0:$PORT --timeout 60
+    healthCheckPath: /health
+    envVars:
+      - key: ENVIRONMENT
+        value: production
+      - key: PYTHON_VERSION
+        value: 3.12.3
+      - key: DATABASE_URL
+        fromDatabase:
+          name: study-planner-db
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: CORS_ORIGINS
+        sync: false          # set to your Vercel URL, e.g. https://ai-study-planner.vercel.app
+      - key: AI_API_KEY
+        sync: false          # optional; leave empty to run without AI
+      - key: AI_MODEL
+        value: claude-haiku-5-5
